@@ -56,12 +56,17 @@
       font-size: 18px;
       margin-top: 10px;
     }
+    #funny-message {
+      margin-top: 20px;
+      font-size: 20px;
+      color: black; /* Frasi in nero */
+    }
     #plane {
       position: absolute;
       bottom: 0;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 40px;
+      font-size: 64px; /* Ridotto del 20% */
       display: none;
     }
     @keyframes fly {
@@ -91,7 +96,8 @@
     <div class="reel" id="reel2">🍋</div>
     <div class="reel" id="reel3">🍉</div>
   </div>
-  <button class="lever" id="spin-button">Tira la leva!</button>
+  <div id="funny-message"></div> <!-- Aggiunto per i messaggi divertenti -->
+  <button class="lever" id="spin-button">Gira</button> <!-- Pulsante rinominato -->
   <div id="message"></div>
   <div id="attempts">Tentativi rimasti: 3</div>
 
@@ -104,6 +110,7 @@
     const message = document.getElementById('message');
     const spinButton = document.getElementById('spin-button');
     const attemptsDisplay = document.getElementById('attempts');
+    const funnyMessage = document.getElementById('funny-message');
     const reels = [
       document.getElementById('reel1'),
       document.getElementById('reel2'),
@@ -125,10 +132,20 @@
     }
 
     function checkWin() {
-      return reels[0].textContent === reels[1].textContent && reels[1].textContent === reels[2].textContent;
+      return attempts === 0 && reels[0].textContent === reels[1].textContent && reels[1].textContent === reels[2].textContent;
+    }
+
+    function displayFunnyMessage(attempt) {
+      const messages = [
+        "Peccato, magari potresti riprovare! 😅",
+        "Ci sei quasi... 🤞"
+      ];
+      funnyMessage.textContent = messages[attempt];
     }
 
     spinButton.addEventListener('click', () => {
+      spinButton.disabled = true; // Disabilita il pulsante
+
       attempts--;
       attemptsDisplay.textContent = 'Tentativi rimasti: ' + attempts;
 
@@ -136,8 +153,8 @@
 
       setTimeout(() => {
         if (attempts < 1) {
-          // Forza la vincita al terzo tentativo
-          reels.forEach(reel => reel.textContent = '🍏'); // Mostra mela
+          // Mostra tris di mele e vincita
+          reels.forEach(reel => reel.textContent = '🍏'); // Mostra tris di mele
           message.textContent = 'Hai vinto al terzo tentativo!';
           spinButton.disabled = true;
 
@@ -146,18 +163,16 @@
           plane.style.display = 'block'; // Mostra l'aeroplanino
           redirectAfterAnimation();
         } else {
-          if (checkWin()) {
-            message.textContent = 'Hai vinto!';
-            spinButton.disabled = true;
-
-            // Mostra l'aeroplanino e inizia l'animazione
-            plane.classList.add('fly-animation');
-            plane.style.display = 'block'; // Mostra l'aeroplanino
-            redirectAfterAnimation();
-          } else {
-            message.textContent = 'Riprova!';
-          }
+          // Mostra messaggio divertente in base ai tentativi
+          displayFunnyMessage(2 - attempts); // Mostra messaggio divertente
+          message.textContent = ''; // Pulisci il messaggio precedente
         }
+
+        // Riabilita il pulsante dopo 2 secondi
+        setTimeout(() => {
+          spinButton.disabled = false;
+          funnyMessage.textContent = ''; // Pulisci il messaggio divertente
+        }, 2000);
       }, 1000);
     });
 
