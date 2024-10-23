@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slot Machine</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f0f0f0;
+      position: relative;
+      overflow: hidden;
+    }
+    #slot-machine {
+      margin: 100px auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .reel {
+      font-size: 60px;
+      border: 2px solid #333;
+      padding: 20px;
+      width: 80px;
+      height: 80px;
+      background-color: #fff;
+      margin: 0 10px;
+      transition: transform 0.5s ease;
+    }
+    .reel.spin {
+      animation: spin 1s ease-in-out infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotateX(0); }
+      100% { transform: rotateX(360deg); }
+    }
+    .lever {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .lever:disabled {
+      background-color: #ccc;
+    }
+    #message {
+      margin-top: 20px;
+      font-size: 24px;
+    }
+    #attempts {
+      font-size: 18px;
+      margin-top: 10px;
+    }
+    #plane {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 40px;
+      display: none;
+    }
+    @keyframes fly {
+      0% {
+        transform: translateX(-50%) rotate(0);
+        bottom: 0;
+      }
+      50% {
+        transform: translateX(-200px) rotate(-30deg);
+        bottom: 200px;
+      }
+      100% {
+        transform: translateX(-50%) rotate(-45deg);
+        bottom: 100%;
+      }
+    }
+    .fly-animation {
+      display: block;
+      animation: fly 3s ease-in-out forwards;
+    }
+  </style>
+</head>
+<body>
+  <h1>Gira la Slot Machine!</h1>
+  <div id="slot-machine">
+    <div class="reel" id="reel1">🍒</div>
+    <div class="reel" id="reel2">🍋</div>
+    <div class="reel" id="reel3">🍉</div>
+  </div>
+  <button class="lever" id="spin-button">Tira la leva!</button>
+  <div id="message"></div>
+  <div id="attempts">Tentativi rimasti: 3</div>
+
+  <!-- Aereoplanino -->
+  <div id="plane">✈️</div>
+
+  <script>
+    let attempts = 3;
+    const symbols = ['🍒', '🍋', '🍉', '🍇', '🍓', '🍊', '🍏']; // Aggiunta mela
+    const message = document.getElementById('message');
+    const spinButton = document.getElementById('spin-button');
+    const attemptsDisplay = document.getElementById('attempts');
+    const reels = [
+      document.getElementById('reel1'),
+      document.getElementById('reel2'),
+      document.getElementById('reel3')
+    ];
+    const plane = document.getElementById('plane');
+
+    function spinReels() {
+      reels.forEach((reel) => {
+        reel.classList.add('spin');
+      });
+
+      setTimeout(() => {
+        reels.forEach((reel) => {
+          reel.classList.remove('spin');
+          reel.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        });
+      }, 1000);
+    }
+
+    function checkWin() {
+      return reels[0].textContent === reels[1].textContent && reels[1].textContent === reels[2].textContent;
+    }
+
+    spinButton.addEventListener('click', () => {
+      attempts--;
+      attemptsDisplay.textContent = 'Tentativi rimasti: ' + attempts;
+
+      spinReels();
+
+      setTimeout(() => {
+        if (attempts < 1) {
+          // Forza la vincita al terzo tentativo
+          reels.forEach(reel => reel.textContent = '🍏'); // Mostra mela
+          message.textContent = 'Hai vinto al terzo tentativo!';
+          spinButton.disabled = true;
+
+          // Mostra l'aeroplanino e inizia l'animazione
+          plane.classList.add('fly-animation');
+          plane.style.display = 'block'; // Mostra l'aeroplanino
+          redirectAfterAnimation();
+        } else {
+          if (checkWin()) {
+            message.textContent = 'Hai vinto!';
+            spinButton.disabled = true;
+
+            // Mostra l'aeroplanino e inizia l'animazione
+            plane.classList.add('fly-animation');
+            plane.style.display = 'block'; // Mostra l'aeroplanino
+            redirectAfterAnimation();
+          } else {
+            message.textContent = 'Riprova!';
+          }
+        }
+      }, 1000);
+    });
+
+    function redirectAfterAnimation() {
+      plane.addEventListener('animationend', () => {
+        window.location.href = 'https://www.google.it'; // Inserisci la tua URL qui
+      });
+    }
+  </script>
+</body>
+</html>
