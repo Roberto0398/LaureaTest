@@ -65,6 +65,11 @@
       margin-top: 20px;
       font-size: 24px;
       transition: transform 0.5s, opacity 0.5s, color 1s;
+      max-width: 90%; /* Limita la larghezza massima */
+      overflow: hidden; /* Nasconde il contenuto che esce */
+      text-align: center; /* Centra il testo */
+      margin-left: auto; /* Centra il margine sinistro */
+      margin-right: auto; /* Centra il margine destro */
     }
     #attempts {
       font-size: 18px;
@@ -97,10 +102,10 @@
     }
     @keyframes winEffect {
       0% { transform: scale(1); opacity: 1; color: gold; }
-      20% { color: red; }
-      40% { transform: scale(1.5); opacity: 1; }
-      60% { color: blue; }
-      80% { transform: scale(1); opacity: 1; color: gold; }
+      25% { color: red; }
+      50% { transform: scale(1.5); opacity: 1; }
+      75% { color: blue; }
+      100% { transform: scale(1); opacity: 1; color: gold; }
     }
     .confetti {
       position: absolute;
@@ -222,7 +227,6 @@
         }, 1800);
       }, 1000);
     });
-
     function redirectAfterAnimation() {
       plane.addEventListener('animationend', () => {
         window.location.href = 'https://www.google.com/travel/flights/booking?tfs=CBwQAhpKEgoyMDI0LTEyLTExIiAKA0JSSRIKMjAyNC0xMi0xMRoDQlVEKgJXNjIEMjM2MmoMCAISCC9tLzBjNjZtcgwIAxIIL20vMDk1d18aShIKMjAyNC0xMi0xNCIgCgNCVUQSCjIwMjQtMTItMTQaA0JSSSoCVzYyBDIzNjFqDAgDEggvbS8wOTV3X3IMCAISCC9tLzBjNjZtQAFIAXABggELCP___________wGYAQE&tfu=CmxDalJJY1ZONVRuUkdRM05PTUdOQlJtVk9NVkZDUnkwdExTMHRMUzB0TFhkbWFYVTBNa0ZCUVVGQlIyTmFUMnhuVFZSRFZFOUJFZ1pYTmpJek5qRWFDZ2phS1JBQ0dnTkZWVkk0SEhEMkxBPT0SAggAIgYKATAKATE&hl=it&tcfs=UgRgAXgB'; // Inserisci la tua URL qui
