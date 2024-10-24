@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it"> 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Slot Machine</title>
+  <title>Regalo Laurea</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       text-align: center;
-      background-color: #f0f0f0;
+      background: linear-gradient(to bottom, #87CEEB, #FFFFFF); /* Gradiente cielo */
       position: relative;
       overflow: hidden;
     }
@@ -17,6 +17,10 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      backdrop-filter: blur(10px); /* Sfocatura per far risaltare la slot machine */
+      border-radius: 15px; /* Angoli arrotondati */
+      padding: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3); /* Ombra per profondità */
     }
     .reel {
       font-size: 60px;
@@ -51,6 +55,7 @@
     #message {
       margin-top: 20px;
       font-size: 24px;
+      transition: transform 0.5s, opacity 0.5s, color 1s;
     }
     #attempts {
       font-size: 18px;
@@ -87,22 +92,45 @@
       display: block;
       animation: fly 3s ease-in-out forwards;
     }
+    .win-animation {
+      animation: winEffect 4s forwards; /* Durata raddoppiata */
+    }
+    @keyframes winEffect {
+      0% { transform: scale(1); opacity: 1; color: gold; }
+      25% { color: red; } /* Cambia colore all'inizio */
+      50% { transform: scale(1.5); opacity: 1; } /* Ingrandimento */
+      75% { color: blue; } /* Cambia colore durante l'ingrandimento */
+      100% { transform: scale(1); opacity: 1; color: gold; } /* Torna alla dimensione originale */
+    }
+    .confetti {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      display: none;
+      z-index: 999;
+    }
   </style>
 </head>
 <body>
-  <h1>Gira la Slot Machine!</h1>
+  <h1>La sorte sarà dalla tua parte?<br/>Gira la Slot Machine!</h1>
   <div id="slot-machine">
     <div class="reel" id="reel1">🍒</div>
     <div class="reel" id="reel2">🍋</div>
     <div class="reel" id="reel3">🍉</div>
   </div>
   <div id="funny-message"></div> <!-- Aggiunto per i messaggi divertenti -->
-  <button class="lever" id="spin-button">Gira</button> <!-- Pulsante rinominato -->
+  <button class="lever" id="spin-button">Gira!</button> <!-- Pulsante rinominato -->
   <div id="message"></div>
   <div id="attempts">Tentativi rimasti: 3</div>
 
   <!-- Aereoplanino -->
   <div id="plane">✈️</div>
+  
+  <!-- Confetti -->
+  <div class="confetti" id="confetti"></div>
 
   <script>
     let attempts = 3;
@@ -117,6 +145,7 @@
       document.getElementById('reel3')
     ];
     const plane = document.getElementById('plane');
+    const confetti = document.getElementById('confetti');
 
     function spinReels() {
       reels.forEach((reel) => {
@@ -131,8 +160,12 @@
       }, 1000);
     }
 
-    function checkWin() {
-      return attempts === 0 && reels[0].textContent === reels[1].textContent && reels[1].textContent === reels[2].textContent;
+    function displayConfetti() {
+      confetti.style.display = 'block';
+      // Aggiungi logica per mostrare i confetti (qui puoi usare una libreria o disegnarli con canvas)
+      setTimeout(() => {
+        confetti.style.display = 'none';
+      }, 3000); // Nascondi i confetti dopo 3 secondi
     }
 
     function displayFunnyMessage(attempt) {
@@ -156,23 +189,28 @@
           // Mostra tris di mele e vincita
           reels.forEach(reel => reel.textContent = '🍏'); // Mostra tris di mele
           message.textContent = 'Hai vinto al terzo tentativo!';
+          message.classList.add('win-animation'); // Aggiungi animazione al messaggio
           spinButton.disabled = true;
 
-          // Mostra l'aeroplanino e inizia l'animazione
-          plane.classList.add('fly-animation');
-          plane.style.display = 'block'; // Mostra l'aeroplanino
-          redirectAfterAnimation();
+          // Aspetta che l'animazione di vincita finisca prima di mostrare l'aeroplano
+          setTimeout(() => {
+            displayConfetti(); // Mostra i confetti
+            plane.classList.add('fly-animation');
+            plane.style.display = 'block'; // Mostra l'aeroplanino
+            redirectAfterAnimation();
+          }, 4000); // Aspetta che l'animazione di vincita sia completata
+
         } else {
           // Mostra messaggio divertente in base ai tentativi
           displayFunnyMessage(2 - attempts); // Mostra messaggio divertente
           message.textContent = ''; // Pulisci il messaggio precedente
         }
 
-        // Riabilita il pulsante dopo 2 secondi
+        // Riabilita il pulsante dopo 1,8 secondi
         setTimeout(() => {
           spinButton.disabled = false;
           funnyMessage.textContent = ''; // Pulisci il messaggio divertente
-        }, 2000);
+        }, 1800);
       }, 1000);
     });
 
